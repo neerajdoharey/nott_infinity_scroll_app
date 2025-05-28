@@ -2,24 +2,19 @@
 import { useState } from "react"
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView, StatusBar, TextInput } from "react-native"
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { useAuth } from "../context/AuthContext";
 
-const Login = ({ navigation, onBack }: { navigation?: any; onBack?: () => void }) => {
+const Login = ({ navigation }) => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [rememberMe, setRememberMe] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+  const { onLogin } = useAuth();
 
-  const handleBack = () => {
-    if (onBack) {
-      onBack()
-    } else {
-      console.log("Go back")
+  const login = async () => {
+    const response = await onLogin(email, password);
+    if (response && response.error) {
+      alert("Login failed:", response.error_description);
     }
-  }
-
-  const handleLogin = () => {
-    console.log("Login pressed", { email, password, rememberMe })
-    // Handle login logic
   }
 
   const handleSocialLogin = (provider: string) => {
@@ -35,11 +30,6 @@ const Login = ({ navigation, onBack }: { navigation?: any; onBack?: () => void }
   const handleForgotPassword = () => {
     console.log("Forgot password pressed")
     // Handle forgot password navigation
-  }
-
-  const handleCreateAccount = () => {
-    console.log("Create account pressed")
-    // Navigate to create account screen
   }
 
   return (
@@ -68,7 +58,7 @@ const Login = ({ navigation, onBack }: { navigation?: any; onBack?: () => void }
               style={styles.textInput}
               placeholder="Email"
               value={email}
-              onChangeText={setEmail}
+              onChangeText={(text: string ) => setEmail(text)}
               keyboardType="email-address"
               autoCapitalize="none"
               placeholderTextColor="#999"
@@ -81,7 +71,7 @@ const Login = ({ navigation, onBack }: { navigation?: any; onBack?: () => void }
               style={styles.textInput}
               placeholder="Password"
               value={password}
-              onChangeText={setPassword}
+              onChangeText={(text: string ) => setPassword(text)}
               secureTextEntry={!showPassword}
               placeholderTextColor="#999"
             />
@@ -96,7 +86,7 @@ const Login = ({ navigation, onBack }: { navigation?: any; onBack?: () => void }
         </View>
         
         {/* Login Button */}
-        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+        <TouchableOpacity style={styles.loginButton} onPress={login}>
           <Text style={styles.loginButtonText}>SIGN IN</Text>
         </TouchableOpacity>
 
@@ -137,7 +127,7 @@ const Login = ({ navigation, onBack }: { navigation?: any; onBack?: () => void }
         {/* Create Account Link */}
         <View style={styles.createAccountContainer}>
           <Text style={styles.createAccountText}>Don't have an account? </Text>
-          <TouchableOpacity onPress={handleCreateAccount}>
+          <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
             <Text style={styles.createAccountLink}>Create Account</Text>
           </TouchableOpacity>
         </View>

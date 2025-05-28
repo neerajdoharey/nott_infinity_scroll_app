@@ -14,9 +14,9 @@ export const API_URL: string = Platform.OS === 'android'
     ? 'http://10.0.2.2:3000' 
     : 'http://localhost:3000';
 
-export const GRANT_TYPE: string = 'password';
-export const CLIENT_ID: string = '8XLiNz3V7wdW9I1-5RD39LeBYU_m-KzW_GWlCEpyVqk';
-export const CLIENT_SECRET: string = '9Dl-6v5WZw3OtcLFUpWfKIpzInNjXH0fc9L7sL3DO6Q';
+export const grant_type: string = 'password';
+export const client_id: string = '8XLiNz3V7wdW9I1-5RD39LeBYU_m-KzW_GWlCEpyVqk';
+export const client_secret: string = '9Dl-6v5WZw3OtcLFUpWfKIpzInNjXH0fc9L7sL3DO6Q';
 
 interface AuthProps {
     authState?: { token: string | null; authenticated: boolean | null };
@@ -60,6 +60,7 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
         };
         checkToken();
     }, []);
+
     const register = async (email: string, password: string) => {
       try{
         return await axios.post(`${API_URL}/register`, {email, password})
@@ -71,8 +72,8 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
 
     const login = async (email: string, password: string) => {
       try{
-        const result = await axios.post(`${API_URL}/oauth/token`, {email, password, GRANT_TYPE, CLIENT_ID, CLIENT_SECRET})
-
+        const result = await axios.post(`${API_URL}/oauth/token`, {email, password, grant_type, client_id, client_secret})
+    
         setAuthState({
           token: result.data.access_token,
           authenticated: true,
