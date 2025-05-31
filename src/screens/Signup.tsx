@@ -3,6 +3,7 @@ import { useState } from "react"
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView, StatusBar, TextInput } from "react-native"
 import Icons from 'react-native-vector-icons/MaterialIcons';
 import { useAuth } from "../context/AuthContext";
+import Snackbar from 'react-native-snackbar'
 
 const Signup = ({ navigation}: { navigation?: any}) => {
   const [firstName, setFirstName] = useState("")
@@ -13,7 +14,16 @@ const Signup = ({ navigation}: { navigation?: any}) => {
   const { onLogin, onRegister } = useAuth();
   
   const register = async () => {
+    if (!acceptTerms) {
+      Snackbar.show({
+        text: "Please accept the terms and conditions",
+        duration: Snackbar.LENGTH_SHORT,
+      });
+      return;
+    }
+
     const response = await onRegister!(email, password, firstName, lastName);
+    
     if (response && response.error) {
       alert("Registration failed:", response.error_description);
     }else{

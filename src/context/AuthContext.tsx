@@ -96,6 +96,7 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
           last_name: lastName
         }
       };
+      
       try{
         return await axios.post(`${API_URL}/api/v1/users/signup`, payload)
       }catch (error) {
@@ -105,6 +106,7 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
     };
 
     const login = async (email: string, password: string) => {
+      
       try{
         const result = await axios.post(`${API_URL}/oauth/token`, {email, password, grant_type, client_id, client_secret})
         setAuthState({
@@ -196,7 +198,6 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
       try {
         axios.defaults.headers.common['Authorization'] = `Bearer ${authState.token}`;
         const result = await axios.post(`${API_URL}/api/v1/verify_otp`, { code });
-        debugger
         if (result.data.success) {
           setAuthState(prevState => ({
             ...prevState,

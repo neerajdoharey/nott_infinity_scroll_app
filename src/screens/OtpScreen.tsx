@@ -55,21 +55,20 @@ const OTPVerificationScreen = ({ navigation, onBack }: { navigation?: any; onBac
   }
 
   const handleVerify = async () => {
-  const otpCode = otp.join("");
-  if (otpCode.length === 6) {
-    const response = await verfiyCode!(otpCode);
-    debugger
-    if (response?.success) {
-      // Handle successful verification
-      navigation.navigate('Home'); // or wherever you want to go
+    const otpCode = otp.join("");
+    if (otpCode.length === 6) {
+      const response = await verfiyCode!(otpCode);
+      
+      if (response?.success) {
+        navigation.navigate('Home'); 
+      }
+    } else {
+      Snackbar.show({
+        text: "Please enter complete OTP",
+        duration: Snackbar.LENGTH_SHORT,
+      });
     }
-  } else {
-    Snackbar.show({
-      text: "Please enter complete OTP",
-      duration: Snackbar.LENGTH_SHORT,
-    });
-  }
-};
+  };
 
   const handleResendOTP = () => {
     if (canResend) {
