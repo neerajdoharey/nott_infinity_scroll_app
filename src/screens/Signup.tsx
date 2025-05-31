@@ -2,19 +2,29 @@
 import { useState } from "react"
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView, StatusBar, TextInput } from "react-native"
 import Icons from 'react-native-vector-icons/MaterialIcons';
+import { useAuth } from "../context/AuthContext";
 
-const Signup = ({ navigation, onBack }: { navigation?: any; onBack?: () => void }) => {
+const Signup = ({ navigation}: { navigation?: any}) => {
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [acceptTerms, setAcceptTerms] = useState(false)
+  const { onLogin, onRegister } = useAuth();
+  
+  const register = async () => {
+    const response = await onRegister!(email, password, firstName, lastName);
+    if (response && response.error) {
+      alert("Registration failed:", response.error_description);
+    }else{
+      login()
+    }
+  }
 
-  const handleBack = () => {
-    if (onBack) {
-      onBack()
-    } else {
-      console.log("Go back")
+  const login = async () => {
+    const response = await onLogin!(email, password);
+    if (response && response.error) {
+      alert("Login failed:", response.error_description);
     }
   }
 
@@ -39,8 +49,8 @@ const Signup = ({ navigation, onBack }: { navigation?: any; onBack?: () => void 
 
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={handleBack} style={styles.menuButton}>
-          {/* <Menu width={24} height={24} stroke="#000" /> */}
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Icons name="arrow-back" size={24} color="#000" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>CREATE ACCOUNT</Text>
         <View style={{ width: 24 }} />
@@ -58,7 +68,7 @@ const Signup = ({ navigation, onBack }: { navigation?: any; onBack?: () => void 
               style={styles.textInput}
               placeholder="First name"
               value={firstName}
-              onChangeText={setFirstName}
+              onChangeText={(text: string ) => setFirstName(text)}
               placeholderTextColor="#999"
             />
           </View>
@@ -69,7 +79,7 @@ const Signup = ({ navigation, onBack }: { navigation?: any; onBack?: () => void 
               style={styles.textInput}
               placeholder="Last name"
               value={lastName}
-              onChangeText={setLastName}
+              onChangeText={(text: string ) => setLastName(text)}
               placeholderTextColor="#999"
             />
           </View>
@@ -80,7 +90,7 @@ const Signup = ({ navigation, onBack }: { navigation?: any; onBack?: () => void 
               style={styles.textInput}
               placeholder="Email"
               value={email}
-              onChangeText={setEmail}
+              onChangeText={(text: string ) => setEmail(text)}
               keyboardType="email-address"
               autoCapitalize="none"
               placeholderTextColor="#999"
@@ -93,7 +103,7 @@ const Signup = ({ navigation, onBack }: { navigation?: any; onBack?: () => void 
               style={styles.textInput}
               placeholder="Password"
               value={password}
-              onChangeText={setPassword}
+              onChangeText={(text: string ) => setPassword(text)}
               secureTextEntry
               placeholderTextColor="#999"
             />
@@ -101,7 +111,7 @@ const Signup = ({ navigation, onBack }: { navigation?: any; onBack?: () => void 
         </View>
 
         {/* Register Button */}
-        <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
+        <TouchableOpacity style={styles.registerButton} onPress={register}>
           <Text style={styles.registerButtonText}>REGISTER NOW</Text>
         </TouchableOpacity>
 
@@ -175,6 +185,7 @@ const styles = StyleSheet.create({
     color: "#6B9EFF",
     letterSpacing: 1,
   },
+  
   scrollContent: {
     paddingHorizontal: 24,
     paddingBottom: 32,
@@ -319,7 +330,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#999",
     textDecorationLine: "underline",
-  },
+  },backButton: {
+    padding: 8,
+  }
 })
 
 export default Signup

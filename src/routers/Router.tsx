@@ -5,18 +5,23 @@ import { useAuth } from '../context/AuthContext'
 import Loading from '../components/Loading'
 import AuthStack from '../routers/AuthStack'
 import AppStack from '../routers/AppStack'
+import OtpScreen from '../screens/OtpScreen'
 
 const Router = () => {
-  const { authState } = useAuth()
+  const { authState, onLogout } = useAuth()
 
   if (authState.authenticated === null) {
     return <Loading />
   }
-
+  { console.log('Auth State:', authState) }
   return (
-    <NavigationContainer>    
-      { authState.authenticated ? (
-        <AppStack />
+    <NavigationContainer>
+      {authState.authenticated ? (
+        authState.verified ? (
+          <AppStack />
+        ) : (
+          <OtpScreen onBack={onLogout}/>
+        )
       ) : (
         <AuthStack />
       )}

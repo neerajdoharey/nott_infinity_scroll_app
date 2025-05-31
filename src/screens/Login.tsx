@@ -4,16 +4,16 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView, Sta
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useAuth } from "../context/AuthContext";
 
-const Login = ({ navigation }) => {
+const Login = ({ navigation }: { navigation?: any}) => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const { onLogin } = useAuth();
 
   const login = async () => {
-    const response = await onLogin(email, password);
+    const response = await onLogin!(email, password);
     if (response && response.error) {
-      alert("Login failed:", response.error_description);
+      alert("Login failed");
     }
   }
 
